@@ -4,7 +4,7 @@ from http.server import BaseHTTPRequestHandler
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
-            with open('q-vercel-python.json', 'r') as file:
+            with open('./api/q-vercel-python.json', 'r') as file:
                 data = json.load(file)
 
             query = self.path.split('?')[1] if '?' in self.path else ''
