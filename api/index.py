@@ -1,4 +1,5 @@
 import json
+from urllib.parse import parse_qs
 from http.server import BaseHTTPRequestHandler
 
 class handler(BaseHTTPRequestHandler):
@@ -8,14 +9,13 @@ class handler(BaseHTTPRequestHandler):
                 data = json.load(file)
 
             query = self.path.split('?')[1] if '?' in self.path else ''
-            params = {key: value for key, value in [param.split('=') for param in query.split('&') if '=' in param]}
+            params = parse_qs(query)
 
-            names = params.get('name', '').split(',') if 'name' in params else []
+            # Get all 'name' values correctly
+            names = params.get('name', [])
 
-            marks_list = []
-            for item in data:
-                if item.get('name') in names:
-                    marks_list.append(item.get('marks', 0))  # Default to 0 if "marks" key is missing
+            # Collect all matching 'marks' values
+            marks_list = [item.get('marks', 0) for item in data if item.get('name') in names]
 
             response = {"marks": marks_list}
 
