@@ -12,9 +12,12 @@ class handler(BaseHTTPRequestHandler):
 
             names = params.get('name', '').split(',') if 'name' in params else []
 
-            results = [item['marks'] for item in data if item['name'] in names and 'marks' in item]
-            
-            response = {"marks": results}
+            marks_list = []
+            for item in data:
+                if item.get('name') in names:
+                    marks_list.append(item.get('marks', 0))  # Default to 0 if "marks" key is missing
+
+            response = {"marks": marks_list}
 
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
