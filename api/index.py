@@ -11,11 +11,14 @@ class handler(BaseHTTPRequestHandler):
             query = self.path.split('?')[1] if '?' in self.path else ''
             params = parse_qs(query)
 
-            # Get all 'name' values correctly
+            # Extract names in the order they appear in the query
             names = params.get('name', [])
 
-            # Collect all matching 'marks' values
-            marks_list = [item.get('marks', 0) for item in data if item.get('name') in names]
+            # Convert data into a dictionary for quick lookup
+            data_dict = {item['name']: item.get('marks', 0) for item in data}
+
+            # Retrieve marks in the same order as names in the query
+            marks_list = [data_dict.get(name, 0) for name in names]
 
             response = {"marks": marks_list}
 
